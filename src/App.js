@@ -4,6 +4,7 @@ import "./App.css";
 
 import * as yup from "yup";
 import schema from "./validation/formSchema";
+import axios from "axios";
 
 import Home from "./compenents/Home";
 import PizzaForm from "./compenents/PizzaForm";
@@ -18,10 +19,16 @@ const initialFormValues = {
   //     topping2: bool,
   //     special: string,
   // }
+  //text inputs
   name: "",
+  //dropdown for size
   size: "",
-  topping1: false,
-  topping2: false,
+  //checkboxes for toppings
+  pepperoni: false,
+  sausage: false,
+  mushrooms: false,
+  olives: false,
+  //special instructions
   special: ""
 };
 const initialFormErrors = {
@@ -59,7 +66,14 @@ const App = () => {
 
   // update state when a new pizza is created
   const postNewPizza = newPizza => {
-    setPizzas([newPizza, ...pizzas]);
+    axios
+      .post(`https://reqres.in/api/orders`, newPizza)
+      .then(res => {
+        console.log(res.data);
+        setPizzas([newPizza, ...pizzas]);
+      })
+      .catch(err => console.error(err));
+
     setFormValues(initialFormValues);
   };
 
@@ -68,9 +82,10 @@ const App = () => {
     const newPizza = {
       name: formValues.name.trim(),
       size: formValues.size.trim(),
-      topping1: formValues.topping1.toString(),
-      topping2: formValues.topping2.toString(),
-      special: formValues.special.trim()
+      special: formValues.special.trim(),
+      toppings: ["pepperoni", "sausage", "mushrooms", "olives"].filter(
+        topping => !!formValues[topping]
+      )
     };
     postNewPizza(newPizza);
   };

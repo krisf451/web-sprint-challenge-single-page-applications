@@ -6,11 +6,19 @@ export default function Pizza({ details }) {
   }
   return (
     <div className="pizza container">
-      <h2>Pizza Name: {details.name}</h2>
+      <h2>{details.name}'s Pizza</h2>
       <p>Size: {details.size}</p>
+      {!!details.toppings && !!details.toppings.length && (
+        <div>
+          Toppings:
+          <ul>
+            {details.toppings.map((like, idx) => (
+              <li key={idx}>{like}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <p>Special Instructions: {details.special}</p>
-      <p>Wants topping1?: {details.topping1}</p>
-      <p>Wants topping2?: {details.topping2}</p>
     </div>
   );
 }
